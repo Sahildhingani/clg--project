@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="900" viewBox="0 0 900 900">
+  <rect width="900" height="900" fill="#FAFBFB"/>
+  <path
+    d="M220 90
+       L300 50
+       L420 70
+       L540 55
+       L640 90
+       L740 150
+       L810 230
+       L785 300
+       L820 360
+       L780 420
+       L710 460
+       L690 520
+       L650 600
+       L610 700
+       L560 780
+       L500 830
+       L450 845
+       L410 820
+       L370 760
+       L330 700
+       L290 620
+       L270 540
+       L240 460
+       L220 380
+       L205 300
+       L195 220
+       L205 150
+       Z"
+    fill="#96D5FD"
+    stroke="#4E7FA8"
+    stroke-width="6"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M640 90
+       L720 120
+       L810 180
+       L850 250
+       L840 300
+       L780 320
+       L720 320
+       L690 300
+       L700 250
+       L680 200
+       Z"
+    fill="#96D5FD"
+    stroke="#4E7FA8"
+    stroke-width="6"
+    stroke-linejoin="round"
+  />
+  <circle cx="300" cy="720" r="18" fill="#96D5FD" stroke="#4E7FA8" stroke-width="5"/>
+  <circle cx="760" cy="760" r="18" fill="#96D5FD" stroke="#4E7FA8" stroke-width="5"/>
+</svg>
