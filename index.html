@@ -9,14 +9,72 @@
 <body>
   <main class="app-shell">
     <header class="hero">
-      <h1>India AQI Insight Map</h1>
-      <p>Click anywhere on the map to view state-level AQI, trend over 2023-2025, and 2-year forecast.</p>
+      <div class="hero-copy">
+        <p class="eyebrow">India Air Quality Forecast Dashboard</p>
+        <h1>Explore state AQI, predict the next 5 years, and act on the biggest pollution drivers.</h1>
+        <p>Click anywhere on the map to view state-level AQI, a simple ML forecast built from past data, 2026-2030 AQI predictions, and state-specific reduction ideas.</p>
+      </div>
+      <div class="hero-stats" aria-label="Dashboard highlights">
+        <article class="hero-stat">
+          <span>Coverage</span>
+          <strong>All Indian states</strong>
+        </article>
+        <article class="hero-stat">
+          <span>Forecast horizon</span>
+          <strong>2026 to 2030</strong>
+        </article>
+        <article class="hero-stat">
+          <span>Model</span>
+          <strong>Browser ML regression</strong>
+        </article>
+      </div>
     </header>
+
+    <section class="guide-grid" aria-label="How to understand the dashboard">
+      <article class="guide-card">
+        <p class="section-kicker">How To Use</p>
+        <h2>Read the dashboard in 3 quick steps</h2>
+        <ol class="guide-list">
+          <li>Choose a state from the map or ranking list.</li>
+          <li>Check the current AQI, trend, and 2030 outlook.</li>
+          <li>Use the pollutant and action sections to see what to fix first.</li>
+        </ol>
+      </article>
+
+      <article class="guide-card">
+        <p class="section-kicker">AQI Meaning</p>
+        <h2>What the AQI bands tell you</h2>
+        <div class="aqi-legend">
+          <span class="legend-pill status-good">Good</span>
+          <span class="legend-pill status-moderate">Moderate</span>
+          <span class="legend-pill status-poor">Poor</span>
+          <span class="legend-pill status-very-poor">Very Poor</span>
+          <span class="legend-pill status-severe">Severe</span>
+        </div>
+        <p class="guide-copy">Higher AQI means worse air quality and greater health risk. The dashboard converts pollutant levels into one comparable AQI score for each state.</p>
+      </article>
+
+      <article class="guide-card">
+        <p class="section-kicker">Forecast Note</p>
+        <h2>How the prediction works</h2>
+        <p class="guide-copy">The forecast uses recent state pollutant data from 2023, 2024, and 2025, learns the direction of change, and extends that pattern to 2026-2030 using a simple browser-based regression model.</p>
+      </article>
+    </section>
 
     <section class="layout">
       <article class="panel map-panel">
-        <h2>Interactive India Map</h2>
+        <div class="panel-head">
+          <div>
+            <p class="section-kicker">Map Explorer</p>
+            <h2>Interactive India Map</h2>
+          </div>
+          <div class="map-legend" aria-hidden="true">
+            <span class="legend-dot"></span>
+            <span>Tap a marker or anywhere nearby</span>
+          </div>
+        </div>
         <div class="map-stage">
+          <div class="map-stage__glow"></div>
           <svg id="indiaMap" viewBox="0 0 900 900" aria-label="Interactive map of India">
             <image
               class="india-base"
@@ -39,10 +97,54 @@
         </div>
         <p class="map-hint">Tip: blank areas auto-select the nearest state marker.</p>
         <p class="map-source">Map source: Wikimedia Commons (SVG)</p>
+
+        <section class="ranking-block">
+          <div class="panel-head ranking-block__head">
+            <div>
+              <p class="section-kicker">State Ranking</p>
+              <h3>2025 AQI Ranking</h3>
+            </div>
+            <p class="ranking-note">Tap any ranked state to load its full forecast and action plan.</p>
+          </div>
+          <div id="rankingList" class="ranking-list" role="list" aria-label="AQI ranking of states"></div>
+        </section>
       </article>
 
       <aside class="panel info-panel">
-        <h2 id="placeTitle">Select a state</h2>
+        <div class="panel-head info-panel__head">
+          <div>
+            <p class="section-kicker">Selected State</p>
+            <h2 id="placeTitle">Select a state</h2>
+          </div>
+          <span id="currentStatusBadge" class="status-badge">Waiting</span>
+        </div>
+
+        <section class="summary-banner" aria-label="State prediction summary">
+          <div>
+            <span class="summary-banner__label">Forecast outlook</span>
+            <strong id="summaryHeadline">Select a state to load AQI predictions.</strong>
+          </div>
+          <p id="summaryText">We'll show the latest AQI, 5-year forecast, and the best reduction ideas for that state.</p>
+        </section>
+
+        <section class="detail-grid" aria-label="Selected state quick insights">
+          <article class="detail-card">
+            <span>Top Pollutants</span>
+            <strong id="insightDrivers">-</strong>
+          </article>
+          <article class="detail-card">
+            <span>2030 Outlook</span>
+            <strong id="insightProjection">-</strong>
+          </article>
+          <article class="detail-card">
+            <span>Expected Change</span>
+            <strong id="insightChange">-</strong>
+          </article>
+          <article class="detail-card">
+            <span>Confidence</span>
+            <strong id="insightConfidence">-</strong>
+          </article>
+        </section>
 
         <div class="chips">
           <div class="chip">
@@ -59,13 +161,35 @@
           </div>
         </div>
 
-        <section>
-          <h3>Trend (2023-2025)</h3>
+        <section class="info-block">
+          <div class="info-block__head">
+            <div>
+              <p class="section-kicker">History</p>
+              <h3>Trend (2023-2025)</h3>
+            </div>
+          </div>
           <div id="trendChart" class="trend-chart"></div>
         </section>
 
-        <section>
-          <h3>Average Pollutants (2025)</h3>
+        <section class="info-block">
+          <div class="info-block__head">
+            <div>
+              <p class="section-kicker">Prediction</p>
+              <h3>ML Forecast (2026-2030)</h3>
+            </div>
+          </div>
+          <p id="modelNote" class="model-note">-</p>
+          <div id="forecastChart" class="forecast-chart"></div>
+        </section>
+
+        <section class="info-block">
+          <div class="info-block__head">
+            <div>
+              <p class="section-kicker">Pollutants</p>
+              <h3>Average Pollutants (2025)</h3>
+            </div>
+          </div>
+          <div id="pollutantHighlights" class="pollutant-highlights"></div>
           <table class="pollutant-table">
             <thead>
               <tr>
@@ -77,9 +201,16 @@
           </table>
         </section>
 
-        <section>
-          <h3>Forecast for 2027</h3>
+        <section class="info-block">
+          <div class="info-block__head">
+            <div>
+              <p class="section-kicker">Action Plan</p>
+              <h3>How This State Can Reduce AQI</h3>
+            </div>
+          </div>
+          <div id="focusCallout" class="focus-callout">Select a state to see the main action focus.</div>
           <p id="forecastText" class="forecast-text">-</p>
+          <ul id="recommendationList" class="recommendation-list"></ul>
         </section>
       </aside>
     </section>
