@@ -37,25 +37,65 @@ const RAW_STATE_POSITIONS = {
   "Lakshadweep": { x: 300, y: 720 }
 };
 
-export const MARKER_SCALE = 2.8;
+export const MARKER_SCALE = 4.6;
 
-const MAP_WIDTH = 900;
-const MAP_HEIGHT = 900;
-const MARKER_X_SCALE = 0.94;
-const MARKER_Y_SCALE = 0.97;
-const MARKER_X_OFFSET = -30;
-const MARKER_Y_OFFSET = 14;
+const LEGACY_MAP_WIDTH = 900;
+const LEGACY_MAP_HEIGHT = 900;
+const MAP_WIDTH = 1500;
+const MAP_HEIGHT = 1614.844;
+const MARKER_X_SCALE = MAP_WIDTH / LEGACY_MAP_WIDTH;
+const MARKER_Y_SCALE = MAP_HEIGHT / LEGACY_MAP_HEIGHT;
+const GLOBAL_MARKER_SHIFT_X = -42;
+const GLOBAL_MARKER_SHIFT_Y = 0;
 
 // Add per-state fine tuning here.
 export const STATE_MARKER_OFFSETS = {
-  "Ladakh": { x: -25, y: 0 }
+  "Ladakh": { x: -18, y: -22 },
+  "Jammu and Kashmir": { x: -18, y: -10 },
+  "Himachal Pradesh": { x: -8, y: -10 },
+  "Punjab": { x: -12, y: -4 },
+  "Chandigarh": { x: -4, y: -3 },
+  "Uttarakhand": { x: 6, y: -8 },
+  "Haryana": { x: -8, y: 0 },
+  "Delhi": { x: -2, y: 0 },
+  "Rajasthan": { x: -20, y: 8 },
+  "Uttar Pradesh": { x: 10, y: 4 },
+  "Bihar": { x: 8, y: 2 },
+  "Sikkim": { x: 6, y: -6 },
+  "Assam": { x: 16, y: 2 },
+  "Arunachal Pradesh": { x: 18, y: -10 },
+  "Nagaland": { x: 16, y: 2 },
+  "Manipur": { x: 18, y: 0 },
+  "Mizoram": { x: 16, y: 8 },
+  "Tripura": { x: 12, y: 6 },
+  "Meghalaya": { x: 10, y: 2 },
+  "West Bengal": { x: 6, y: 8 },
+  "Jharkhand": { x: 0, y: 6 },
+  "Odisha": { x: 8, y: 10 },
+  "Chhattisgarh": { x: 0, y: 8 },
+  "Madhya Pradesh": { x: -6, y: 8 },
+  "Gujarat": { x: -16, y: 10 },
+  "Dadra and Nagar Haveli and Daman and Diu": { x: -10, y: 10 },
+  "Maharashtra": { x: -10, y: 16 },
+  "Goa": { x: -6, y: 10 },
+  "Telangana": { x: 4, y: 10 },
+  "Andhra Pradesh": { x: 14, y: 20 },
+  "Karnataka": { x: -2, y: 16 },
+  "Kerala": { x: 0, y: 22 },
+  "Tamil Nadu": { x: 14, y: 18 },
+  "Puducherry": { x: 14, y: 18 },
+  "Andaman and Nicobar Islands": { x: 28, y: 10 },
+  "Lakshadweep": { x: -12, y: 10 }
 };
 
 function calibrateMarkerPosition(pos, stateName) {
-  const x = (pos.x - MAP_WIDTH / 2) * MARKER_X_SCALE + MAP_WIDTH / 2 + MARKER_X_OFFSET;
-  const y = (pos.y - MAP_HEIGHT / 2) * MARKER_Y_SCALE + MAP_HEIGHT / 2 + MARKER_Y_OFFSET;
+  const x = pos.x * MARKER_X_SCALE;
+  const y = pos.y * MARKER_Y_SCALE;
   const stateOffset = STATE_MARKER_OFFSETS[stateName] || { x: 0, y: 0 };
-  return { x: x + stateOffset.x, y: y + stateOffset.y };
+  return {
+    x: x + GLOBAL_MARKER_SHIFT_X + stateOffset.x,
+    y: y + GLOBAL_MARKER_SHIFT_Y + stateOffset.y
+  };
 }
 
 export const STATE_POSITIONS = Object.fromEntries(

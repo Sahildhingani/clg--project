@@ -3,8 +3,6 @@ import { MARKER_SCALE, STATE_POSITIONS } from "../../marker-positions.js";
 
 const DOT_RADIUS = 2.6;
 const PIN_TIP_OFFSET = 5.2;
-const REMOTE_MAP_URL = "https://upload.wikimedia.org/wikipedia/commons/d/dc/India_location_map.svg";
-const LOCAL_MAP_FALLBACK = "./india-map-custom.svg";
 
 const mapElement = document.getElementById("indiaMap");
 const stateLayer = document.getElementById("stateLayer");
@@ -45,14 +43,6 @@ function nearestStateFromPoint(x, y) {
 }
 
 export function setupMap(onSelectState) {
-  const mapBaseImage = mapElement.querySelector(".india-base");
-  if (mapBaseImage) {
-    mapBaseImage.setAttribute("href", REMOTE_MAP_URL);
-    mapBaseImage.addEventListener("error", () => {
-      mapBaseImage.setAttribute("href", LOCAL_MAP_FALLBACK);
-    });
-  }
-
   for (const state of AQI_DATA.states) {
     const pos = STATE_POSITIONS[state.name];
     if (!pos) continue;

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div id="container"></div>
+<script>
+  fetch('india_location_map.svg')
+    .then(r => r.text())
+    .then(svg => {
+      document.getElementById('container').innerHTML = svg;
+      const paths = document.querySelectorAll('path[id]');
+      const data = {};
+      for (let p of paths) {
+          if (p.id.includes("10m-admin-1")) {
+             let name = p.id.split(".")[0];
+             name = name.replace(/_/g, " ");
+             if (name === "Orissa") name = "Odisha";
+             if (name === "Andaman and Nicobar") name = "Andaman and Nicobar Islands";
+             
+             const bbox = p.getBBox();
+             
+             let cx = bbox.x + bbox.width/2;
+             let cy = bbox.y + bbox.height/2;
+
+             // Map to 900x900
+             cx = cx * (900 / 1500);
+             cy = cy * (900 / 1614.844);
+
+             // Handle multi-part states like West Bengal, Lakshadweep by averaging
+             // or taking the bounding box of the largest part.
+             // getBBox on the parent <g> or combining them:
+             // Actually they are just paths. If multiple paths, take the largest or average.
+             // We'll just assign it (meaning the last one overwrites, which usually works or we can verify).
+             
+             if (!data[name]) data[name] = {x: cx, y: cy, area: bbox.width * bbox.height};
+             else if (bbox.width * bbox.height > data[name].area) {
+                 data[name] = {x: cx, y: cy, area: bbox.width * bbox.height};
+             }
+          }
+      }
+      
+      const finalData = {};
+      for (let k in data) {
+         finalData[k] = {x: Number(data[k].x.toFixed(2)), y: Number(data[k].y.toFixed(2))};
+      }
+      console.log(JSON.stringify(finalData));
+      document.body.innerHTML += "<pre id='output'>" + JSON.stringify(finalData, null, 2) + "</pre>";
+    });
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@ export function createTrendCard(item, heightPct) {
   card.className = "bar-card";
   card.innerHTML = `
     <div class="bar-rail"><div class="bar-fill" style="height:${heightPct}%"></div></div>
-    <span class="bar-year">${item.year}</span>
+    <span class="bar-year">Year ${item.year}</span>
     <strong class="bar-value">AQI ${item.aqi}</strong>
   `;
   return card;
@@ -15,7 +15,7 @@ export function createForecastCard(item, stateClass, widthPct) {
   card.innerHTML = `
     <div class="forecast-card__head">
       <strong>${item.year}</strong>
-      <span class="${stateClass.className}">${stateClass.label}</span>
+      <span class="forecast-card__status ${stateClass.className}">${stateClass.label}</span>
     </div>
     <div class="forecast-meter">
       <div class="forecast-meter__fill" style="width:${widthPct}%"></div>

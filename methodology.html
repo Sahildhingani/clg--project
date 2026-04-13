@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="Read how India AQI Atlas estimates AQI, builds 5-year forecasts, and summarizes state-level pollution drivers."
+  />
+  <title>Methodology | India AQI Atlas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="./index.css" />
+</head>
+<body class="page-methodology">
+  <div class="site-bg" aria-hidden="true">
+    <div class="site-bg__orb site-bg__orb--one"></div>
+    <div class="site-bg__orb site-bg__orb--two"></div>
+    <div class="site-bg__grid"></div>
+  </div>
+
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="./index.html" aria-label="India AQI Atlas home">
+        <span class="brand__mark">AQI</span>
+        <span class="brand__copy">
+          <span class="brand__eyebrow">India Air Quality Platform</span>
+          <strong class="brand__name">India AQI Atlas</strong>
+        </span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a class="site-nav__link" href="./index.html">Home</a>
+        <a class="site-nav__link" href="./explorer.html">Explorer</a>
+        <a class="site-nav__link is-active" href="./methodology.html">Methodology</a>
+        <a class="site-nav__link" href="./articles.html">Articles</a>
+      </nav>
+
+      <a class="button button--ghost site-header__cta" href="./explorer.html">Try Explorer</a>
+    </header>
+
+    <main>
+      <section class="page-intro surface surface--hero">
+        <div>
+          <p class="eyebrow">Forecast Method</p>
+          <h1>How the AQI dashboard turns pollutant averages into a simple 5-year outlook.</h1>
+        </div>
+        <p class="page-intro__copy">
+          This page separates the explanation from the interaction layer, so visitors can understand the project logic
+          without reading through every dashboard card first.
+        </p>
+      </section>
+
+      <section class="method-grid">
+        <article class="surface feature-card">
+          <p class="eyebrow">Step 1</p>
+          <h2>Aggregate yearly pollutant averages</h2>
+          <p>
+            For each state and year, the dashboard averages district-level pollutant values for PM2.5, PM10, NO2, SO2,
+            CO, and O3.
+          </p>
+        </article>
+
+        <article class="surface feature-card">
+          <p class="eyebrow">Step 2</p>
+          <h2>Estimate AQI from the pollutant profile</h2>
+          <p>
+            A weighted AQI score is produced from those six pollutant averages. The score is then clamped into a 0-500
+            AQI range.
+          </p>
+        </article>
+
+        <article class="surface feature-card">
+          <p class="eyebrow">Step 3</p>
+          <h2>Fit a simple linear trend</h2>
+          <p>
+            Each pollutant gets a browser-side linear regression model using the available historical years, and that
+            trend is extended into 2026-2030.
+          </p>
+        </article>
+      </section>
+
+      <section class="split-section">
+        <article class="surface section-panel">
+          <div class="section-heading">
+            <p class="eyebrow">AQI Bands</p>
+            <h2>How the status labels are assigned</h2>
+          </div>
+          <div class="aqi-legend">
+            <span class="legend-pill status-good">Good</span>
+            <span class="legend-pill status-moderate">Moderate</span>
+            <span class="legend-pill status-poor">Poor</span>
+            <span class="legend-pill status-very-poor">Very Poor</span>
+            <span class="legend-pill status-severe">Severe</span>
+          </div>
+          <p class="body-copy">
+            Higher AQI values indicate worse air quality and greater likely health impact. The explorer uses these bands
+            consistently in the ranking list, forecast cards, and state summary badge.
+          </p>
+        </article>
+
+        <article class="surface section-panel">
+          <div class="section-heading">
+            <p class="eyebrow">Interpretation</p>
+            <h2>What the forecast should and should not mean</h2>
+          </div>
+          <div class="bullet-list">
+            <p>The model is intentionally simple and transparent for demonstration purposes.</p>
+            <p>It extends recent pollutant direction rather than simulating weather, policy, or sudden industrial change.</p>
+            <p>It works best as a comparative classroom dashboard, not as an official regulatory forecast.</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="surface formula-panel">
+        <div class="section-heading">
+          <p class="eyebrow">AQI Formula Shape</p>
+          <h2>Weighted pollutant scoring</h2>
+        </div>
+        <div class="formula-box">
+          AQI = 1.25 × PM2.5 + 0.42 × PM10 + 0.8 × NO2 + 0.55 × SO2 + 24 × CO + 0.62 × O3
+        </div>
+        <p class="body-copy">
+          After generating future pollutant values with linear regression, the same AQI scoring method is used to
+          convert each predicted pollutant profile into yearly AQI forecast cards.
+        </p>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
