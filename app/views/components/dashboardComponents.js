@@ -9,6 +9,19 @@ export function createTrendCard(item, heightPct) {
   return card;
 }
 
+export function createMonthlyGraphPoint(item, leftPct, bottomPct) {
+  const point = document.createElement("div");
+  point.className = "monthly-graph__point";
+  point.style.left = `${leftPct}%`;
+  point.style.bottom = `${bottomPct}%`;
+  point.innerHTML = `
+    <span class="monthly-graph__dot" aria-hidden="true"></span>
+    <span class="monthly-graph__value">AQI ${item.aqi}</span>
+    <span class="monthly-graph__label">${item.month}</span>
+  `;
+  return point;
+}
+
 export function createForecastCard(item, stateClass, widthPct) {
   const card = document.createElement("article");
   card.className = "forecast-card";

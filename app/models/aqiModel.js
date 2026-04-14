@@ -1,6 +1,7 @@
 import indiaAirQualityData from "../../data.js";
 
 export const YEARS = indiaAirQualityData.years;
+export const MONTHS = indiaAirQualityData.months;
 export const POLLUTANTS = indiaAirQualityData.pollutants;
 export const AQI_DATA = indiaAirQualityData;
 
@@ -88,6 +89,54 @@ export function stateTrend(name) {
       aqi: estimateAqi(profile)
     };
   });
+}
+
+export function stateMonthlyAqi(name, year = YEARS[YEARS.length - 1]) {
+  const state = getStateByName(name);
+  return MONTHS.map((month, index) => ({
+    month,
+    aqi: state.monthlyAqi?.[year]?.[index] ?? 0
+  }));
+}
+
+export function stateYearlyProfiles(name) {
+  const state = getStateByName(name);
+  return YEARS.map((year) => {
+    const profile = stateYearProfile(state, year);
+    return {
+      year,
+      profile,
+      aqi: estimateAqi(profile)
+    };
+  });
+}
+
+export function stateDistrictRows(name) {
+  const state = getStateByName(name);
+  if (!state) return [];
+
+  return state.districts.flatMap((district) =>
+    YEARS.map((year) => ({
+      district: district.name,
+      year,
+      ...district.data[year]
+    }))
+  );
+}
+
+export function monthlyShiftSummary(values) {
+  const first = values[0]?.aqi ?? 0;
+  const last = values[values.length - 1]?.aqi ?? 0;
+  const peak = values.reduce((highest, item) => (item.aqi > highest.aqi ? item : highest), values[0]);
+  const delta = last - first;
+  const signedDelta = delta > 0 ? `+${delta}` : `${delta}`;
+
+  return {
+    delta,
+    signedDelta,
+    peakMonth: peak.month,
+    peakAqi: peak.aqi
+  };
 }
 
 export function dominantPollutants(profile, count = 2) {

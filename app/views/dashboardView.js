@@ -1,16 +1,19 @@
 import {
   AQI_DATA,
+  MONTHS,
   POLLUTANTS,
   YEARS,
   clusterLabel,
   dominantPollutants,
   forecastConfidenceLabel,
   getAqiClass,
+  monthlyShiftSummary,
   trendSummary
 } from "../models/aqiModel.js";
 import {
   applyMetricCard,
   createForecastCard,
+  createMonthlyGraphPoint,
   createPollutantHighlightCard,
   createPollutantRow,
   createRecommendationItem,
@@ -24,6 +27,8 @@ const refs = {
   currentStatusBadge: document.getElementById("currentStatusBadge"),
   trendLabel: document.getElementById("trendLabel"),
   trendChart: document.getElementById("trendChart"),
+  monthlyShiftChart: document.getElementById("monthlyShiftChart"),
+  monthlyShiftSummary: document.getElementById("monthlyShiftSummary"),
   forecastChart: document.getElementById("forecastChart"),
   pollutantBody: document.getElementById("pollutantBody"),
   pollutantHighlights: document.getElementById("pollutantHighlights"),
@@ -64,6 +69,37 @@ function renderForecast(values) {
   }
 }
 
+function renderMonthlyShift(values) {
+  refs.monthlyShiftChart.innerHTML = "";
+  const maxAqi = Math.max(...values.map((value) => value.aqi), 1);
+  const minAqi = Math.min(...values.map((value) => value.aqi), maxAqi);
+  const range = Math.max(1, maxAqi - minAqi);
+  const getLeftPct = (index) => (values.length === 1 ? 50 : 4 + (index / (values.length - 1)) * 92);
+  const points = values
+    .map((item, index) => {
+      const leftPct = getLeftPct(index);
+      const bottomPct = 12 + ((item.aqi - minAqi) / range) * 76;
+      return `${leftPct.toFixed(2)},${(100 - bottomPct).toFixed(2)}`;
+    })
+    .join(" ");
+
+  const line = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  line.setAttribute("class", "monthly-graph__line");
+  line.setAttribute("viewBox", "0 0 100 100");
+  line.setAttribute("preserveAspectRatio", "none");
+
+  const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+  polyline.setAttribute("points", points);
+  line.appendChild(polyline);
+  refs.monthlyShiftChart.appendChild(line);
+
+  for (const [index, item] of values.entries()) {
+    const leftPct = getLeftPct(index);
+    const bottomPct = 12 + ((item.aqi - minAqi) / range) * 76;
+    refs.monthlyShiftChart.appendChild(createMonthlyGraphPoint(item, leftPct, bottomPct));
+  }
+}
+
 function renderPollutants(profile) {
   refs.pollutantBody.innerHTML = "";
   for (const pollutant of POLLUTANTS) {
@@ -91,7 +127,7 @@ function renderRecommendations(items) {
   }
 }
 
-export function renderDashboard(stateName, series, forecastSeries, recommendations) {
+export function renderDashboard(stateName, series, monthlySeries, forecastSeries, recommendations) {
   const current = series[series.length - 1];
   const stateClass = getAqiClass(current.aqi);
   const firstForecast = forecastSeries[0];
@@ -101,6 +137,7 @@ export function renderDashboard(stateName, series, forecastSeries, recommendatio
   const trendDelta = lastForecast.aqi - current.aqi;
   const direction = trendDelta < 0 ? "improve" : trendDelta > 0 ? "worsen" : "stay similar";
   const signedChange = trendDelta > 0 ? `+${trendDelta}` : `${trendDelta}`;
+  const monthlyShift = monthlyShiftSummary(monthlySeries);
 
   refs.placeTitle.textContent = `${stateName} AQI Overview`;
   applyMetricCard(refs.currentAqi, `${current.aqi}`);
@@ -111,6 +148,7 @@ export function renderDashboard(stateName, series, forecastSeries, recommendatio
   applyMetricCard(refs.trendLabel, trendSummary(series));
 
   renderTrend(series);
+  renderMonthlyShift(monthlySeries);
   renderForecast(forecastSeries);
   renderPollutants(current.profile);
   renderPollutantHighlights(current.profile);
@@ -125,6 +163,8 @@ export function renderDashboard(stateName, series, forecastSeries, recommendatio
   applyMetricCard(refs.insightChange, `${signedChange} AQI by ${lastForecast.year}`);
   applyMetricCard(refs.insightConfidence, forecastConfidenceLabel());
   refs.focusCallout.textContent = `Primary focus for ${stateName}: ${clusterLabel(stateName)}.`;
+  refs.monthlyShiftSummary.textContent =
+    `${YEARS[YEARS.length - 1]} monthly AQI shift across ${MONTHS.length} months: ${monthlyShift.signedDelta} from ${MONTHS[0]} to ${MONTHS[MONTHS.length - 1]}, with the highest level in ${monthlyShift.peakMonth} at AQI ${monthlyShift.peakAqi}.`;
   refs.forecastText.textContent =
     `The in-browser regression model estimates AQI may reach ${lastForecast.aqi} in ${lastForecast.year} for ${stateName} if the current pollutant trajectory continues. That keeps the state in the ${lastForecastClass.label.toLowerCase()} band.`;
   refs.forecastText.className = `forecast-text ${lastForecastClass.className}`;

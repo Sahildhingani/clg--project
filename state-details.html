@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="View complete AQI data, line graph, bar graph, pollutant tables, and district records for any Indian state."
+  />
+  <title>State AQI Details | India AQI Atlas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="./index.css" />
+</head>
+<body class="page-explorer">
+  <div class="site-bg" aria-hidden="true">
+    <div class="site-bg__orb site-bg__orb--one"></div>
+    <div class="site-bg__orb site-bg__orb--two"></div>
+    <div class="site-bg__grid"></div>
+  </div>
+
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="./index.html" aria-label="India AQI Atlas home">
+        <span class="brand__mark">AQI</span>
+        <span class="brand__copy">
+          <span class="brand__eyebrow">India Air Quality Platform</span>
+          <strong class="brand__name">India AQI Atlas</strong>
+        </span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a class="site-nav__link" href="./index.html">Home</a>
+        <a class="site-nav__link" href="./explorer.html">Explorer</a>
+        <a class="site-nav__link is-active" href="./state-details.html">State Details</a>
+        <a class="site-nav__link" href="./methodology.html">Methodology</a>
+      </nav>
+
+      <a class="button button--ghost site-header__cta" href="./explorer.html">Back to Explorer</a>
+    </header>
+
+    <main class="state-page">
+      <section class="page-intro surface surface--hero">
+        <div>
+          <p class="eyebrow">State Dataset</p>
+          <h1 id="statePageTitle">State AQI Details</h1>
+        </div>
+        <p id="statePageSubtitle" class="page-intro__copy">
+          Complete AQI data, monthly and yearly graphs, and district-level pollutant values.
+        </p>
+      </section>
+
+      <section class="state-metric-grid">
+        <article class="detail-card">
+          <span>Current AQI</span>
+          <strong id="stateCurrentAqi">-</strong>
+        </article>
+        <article class="detail-card">
+          <span>Status</span>
+          <strong id="stateCurrentStatus" class="status-badge">-</strong>
+        </article>
+        <article class="detail-card">
+          <span>Yearly Trend</span>
+          <strong id="stateYearlyTrend">-</strong>
+        </article>
+        <article class="detail-card">
+          <span>Peak Month</span>
+          <strong id="statePeakMonth">-</strong>
+        </article>
+        <article class="detail-card">
+          <span>Confidence</span>
+          <strong id="stateConfidence">-</strong>
+        </article>
+      </section>
+
+      <section class="state-detail-grid">
+        <article class="surface info-block">
+          <div class="info-block__head">
+            <div>
+              <p class="eyebrow">Line Graph</p>
+              <h3>Month-wise AQI Shift</h3>
+            </div>
+          </div>
+          <p id="lineChartSummary" class="model-note">-</p>
+          <div id="stateLineChart" class="detail-line-chart" aria-label="Monthly AQI line graph"></div>
+        </article>
+
+        <article class="surface info-block">
+          <div class="info-block__head">
+            <div>
+              <p class="eyebrow">Bar Graph</p>
+              <h3>Year-wise AQI Comparison</h3>
+            </div>
+          </div>
+          <p id="barChartSummary" class="model-note">-</p>
+          <div id="stateBarChart" class="detail-bar-chart" aria-label="Yearly AQI bar graph"></div>
+        </article>
+      </section>
+
+      <section class="state-data-grid">
+        <article class="surface info-block">
+          <div class="info-block__head">
+            <div>
+              <p class="eyebrow">Monthly Data</p>
+              <h3>Current Year AQI Table</h3>
+            </div>
+          </div>
+          <table class="pollutant-table">
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th>AQI</th>
+              </tr>
+            </thead>
+            <tbody id="monthlyTableBody"></tbody>
+          </table>
+        </article>
+
+        <article class="surface info-block">
+          <div class="info-block__head">
+            <div>
+              <p class="eyebrow">Yearly Data</p>
+              <h3>Year-wise AQI Summary</h3>
+            </div>
+          </div>
+          <table class="pollutant-table">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>AQI</th>
+                <th>Top Pollutants</th>
+              </tr>
+            </thead>
+            <tbody id="yearlyTableBody"></tbody>
+          </table>
+        </article>
+      </section>
+
+      <section class="surface info-block">
+        <div class="info-block__head">
+          <div>
+            <p class="eyebrow">Pollutants</p>
+            <h3>Complete Pollutant Matrix</h3>
+          </div>
+        </div>
+        <table class="pollutant-table">
+          <thead id="pollutantMatrixHead"></thead>
+          <tbody id="pollutantMatrixBody"></tbody>
+        </table>
+      </section>
+
+      <section class="surface info-block">
+        <div class="info-block__head">
+          <div>
+            <p class="eyebrow">District Dataset</p>
+            <h3>All District Pollutant Records</h3>
+          </div>
+        </div>
+        <p id="districtSummary" class="model-note">-</p>
+        <div class="table-scroll">
+          <table class="pollutant-table pollutant-table--wide">
+            <thead>
+              <tr>
+                <th>District</th>
+                <th>Year</th>
+                <th>PM2.5</th>
+                <th>PM10</th>
+                <th>NO2</th>
+                <th>SO2</th>
+                <th>CO</th>
+                <th>O3</th>
+              </tr>
+            </thead>
+            <tbody id="districtTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="surface info-block">
+        <div class="info-block__head">
+          <div>
+            <p class="eyebrow">Action Plan</p>
+            <h3>Recommended Next Steps</h3>
+          </div>
+        </div>
+        <ul id="stateRecommendationList" class="recommendation-list"></ul>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="./state-details.js"></script>
+</body>
+</html>
+

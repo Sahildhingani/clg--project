@@ -2,6 +2,7 @@ const indiaAirQualityData = {
   country: "India",
   unit: "ug/m3",
   years: [2023, 2024, 2025],
+  months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
   pollutants: ["PM2.5", "PM10", "NO2", "SO2", "CO", "O3"],
   states: [
     {
@@ -746,5 +747,44 @@ const indiaAirQualityData = {
     }
   ]
 };
+
+function average(values) {
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+function estimateAqi(profile) {
+  const score =
+    profile["PM2.5"] * 1.25 +
+    profile.PM10 * 0.42 +
+    profile.NO2 * 0.8 +
+    profile.SO2 * 0.55 +
+    profile.CO * 24 +
+    profile.O3 * 0.62;
+
+  return Math.max(0, Math.min(500, Math.round(score)));
+}
+
+function buildMonthlyAqiSeries(state, year) {
+  const profile = {};
+  for (const pollutant of indiaAirQualityData.pollutants) {
+    profile[pollutant] = average(state.districts.map((district) => district.data[year][pollutant]));
+  }
+
+  const particulatePressure = (profile["PM2.5"] + profile.PM10) / Math.max(1, estimateAqi(profile));
+  const seasonalAmplitude = Math.min(0.2, 0.08 + particulatePressure * 0.05);
+  const monthFactors = [1.12, 1.08, 1.01, 0.95, 0.91, 0.86, 0.82, 0.84, 0.92, 1.02, 1.11, 1.17];
+
+  return monthFactors.map((factor, index) => {
+    const monthBoost = index === 10 || index === 11 ? seasonalAmplitude : index <= 1 ? seasonalAmplitude * 0.8 : 0;
+    return Math.max(0, Math.round(estimateAqi(profile) * (factor + monthBoost)));
+  });
+}
+
+for (const state of indiaAirQualityData.states) {
+  state.monthlyAqi = {};
+  for (const year of indiaAirQualityData.years) {
+    state.monthlyAqi[year] = buildMonthlyAqiSeries(state, year);
+  }
+}
 
 export default indiaAirQualityData;
