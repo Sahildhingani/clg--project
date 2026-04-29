@@ -234,6 +234,7 @@ export function initChatbot() {
       }
 
       user.email = value;
+      console.log("AQI alert email entered:", user.email);
       state = "state";
       renderConversation();
       input.focus();

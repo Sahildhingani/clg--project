@@ -47,51 +47,71 @@
       <section class="page-intro surface surface--hero">
         <div>
           <p class="eyebrow">Interactive Explorer</p>
-          <h1>State-by-state AQI map, forecast, and action priorities.</h1>
+          <h1>State-by-state AQI insights with a cleaner, easier-to-scan dashboard.</h1>
         </div>
-        <p class="page-intro__copy">
-          Select a state from the map or ranking list to inspect current AQI, historical trend, projected 2030 outlook,
-          pollutant drivers, and suggested reduction actions.
-        </p>
+        <div class="page-intro__actions">
+          <p class="page-intro__copy">
+            Search or choose a state from the ranking list to inspect current AQI, recent trend, projected 2030 outlook,
+            major pollutant drivers, and suggested action priorities.
+          </p>
+          <form id="placeSearchForm" class="place-search" role="search" aria-label="Search states and districts">
+            <label class="place-search__label" for="placeSearchInput">Find a place</label>
+            <div class="place-search__controls">
+              <input
+                id="placeSearchInput"
+                class="place-search__input"
+                name="place"
+                type="search"
+                placeholder="Search state or district"
+                list="placeSearchSuggestions"
+                autocomplete="off"
+              />
+              <button class="button button--primary place-search__button" type="submit">Search</button>
+            </div>
+            <datalist id="placeSearchSuggestions"></datalist>
+            <p id="placeSearchStatus" class="place-search__status">Search by state like Delhi or district like Patna.</p>
+          </form>
+        </div>
       </section>
 
       <section class="dashboard-layout">
-        <article class="surface explorer-panel">
+        <article class="surface explorer-panel explorer-panel--directory">
           <div class="panel-head">
             <div>
-              <p class="eyebrow">Map View</p>
-              <h2>Interactive India Map</h2>
+              <p class="eyebrow">State Directory</p>
+              <h2>Browse the AQI ranking without map clutter</h2>
             </div>
             <div class="panel-badge">
               <span class="legend-dot"></span>
-              <span>Nearest-state selection enabled</span>
+              <span>Ranked live AQI snapshots</span>
             </div>
           </div>
 
-          <div class="map-stage">
-            <div class="map-stage__glow"></div>
-            <div class="map-stage__badge">
-              <span class="map-stage__badge-label">Explorer mode</span>
-              <strong>Click any marker or nearby region</strong>
-            </div>
-
-            <svg id="indiaMap" viewBox="0 0 1500 1614.844" aria-label="Interactive map of India">
-              <image
-                class="india-base"
-                href="./india_location_map.svg"
-                x="0"
-                y="0"
-                width="1500"
-                height="1614.844"
-                preserveAspectRatio="xMidYMid meet"
-              />
-              <g id="stateLayer"></g>
-            </svg>
+          <div class="explorer-summary-grid" aria-label="Explorer summary">
+            <article class="explorer-summary-card explorer-summary-card--accent">
+              <span class="explorer-summary-card__label">States covered</span>
+              <strong id="explorerStateCount">-</strong>
+              <p>National comparison view across the available state-level AQI dataset.</p>
+            </article>
+            <article class="explorer-summary-card">
+              <span class="explorer-summary-card__label">Average AQI</span>
+              <strong id="explorerAvgAqi">-</strong>
+              <p>Current average AQI across all ranked states in the explorer.</p>
+            </article>
+            <article class="explorer-summary-card">
+              <span class="explorer-summary-card__label">Poor or Worse</span>
+              <strong id="explorerCriticalCount">-</strong>
+              <p>States currently falling into poor, very poor, or severe AQI bands.</p>
+            </article>
+            <article class="explorer-summary-card">
+              <span class="explorer-summary-card__label">Highest Priority</span>
+              <strong id="explorerFocusState">-</strong>
+              <p id="explorerFocusText">-</p>
+            </article>
           </div>
 
-          <div class="panel-note-row">
-            <p class="map-hint">Tip: blank map areas automatically snap to the nearest state marker.</p>
-            <p class="map-source">Map asset: local SVG artwork</p>
+          <div class="explorer-panel__note">
+            Use search for direct lookup, or select any row below to refresh the analysis cards and forecast panels on the right.
           </div>
 
           <section class="ranking-block">
@@ -100,7 +120,7 @@
                 <p class="eyebrow">Ranking</p>
                 <h3>2025 AQI Ranking</h3>
               </div>
-              <p class="ranking-note">Use the list for quick comparisons across states.</p>
+              <p class="ranking-note">Compare every state side by side with clearer labels and AQI status badges.</p>
             </div>
             <div id="rankingList" class="ranking-list" role="list" aria-label="AQI ranking of states"></div>
           </section>
@@ -115,49 +135,51 @@
             <span id="currentStatusBadge" class="status-badge">Waiting</span>
           </div>
 
-          <section class="summary-banner" aria-label="State prediction summary">
-            <div>
-              <span class="summary-banner__label">Forecast outlook</span>
-              <strong id="summaryHeadline">Select a state to load AQI predictions.</strong>
-            </div>
-            <p id="summaryText">We’ll show the latest AQI, 5-year forecast, and the best reduction ideas for that state.</p>
-          </section>
+          <div class="info-panel__stack">
+            <section class="summary-banner" aria-label="State prediction summary">
+              <div>
+                <span class="summary-banner__label">Forecast outlook</span>
+                <strong id="summaryHeadline">Select a state to load AQI predictions.</strong>
+              </div>
+              <p id="summaryText">We'll show the latest AQI, 5-year forecast, and the best reduction ideas for that state.</p>
+            </section>
 
-          <section class="detail-grid" aria-label="Selected state quick insights">
-            <article class="detail-card">
-              <span>Top Pollutants</span>
-              <strong id="insightDrivers">-</strong>
-            </article>
-            <article class="detail-card">
-              <span>2030 Outlook</span>
-              <strong id="insightProjection">-</strong>
-            </article>
-            <article class="detail-card">
-              <span>Expected Change</span>
-              <strong id="insightChange">-</strong>
-            </article>
-            <article class="detail-card">
-              <span>Confidence</span>
-              <strong id="insightConfidence">-</strong>
-            </article>
-          </section>
+            <section class="detail-grid" aria-label="Selected state quick insights">
+              <article class="detail-card">
+                <span>Top Pollutants</span>
+                <strong id="insightDrivers">-</strong>
+              </article>
+              <article class="detail-card">
+                <span>2030 Outlook</span>
+                <strong id="insightProjection">-</strong>
+              </article>
+              <article class="detail-card">
+                <span>Expected Change</span>
+                <strong id="insightChange">-</strong>
+              </article>
+              <article class="detail-card">
+                <span>Confidence</span>
+                <strong id="insightConfidence">-</strong>
+              </article>
+            </section>
 
-          <div class="chips">
-            <div class="chip">
-              <span>Current AQI (2025)</span>
-              <strong id="currentAqi">-</strong>
-            </div>
-            <div class="chip">
-              <span>Status</span>
-              <strong id="currentStatus">-</strong>
-            </div>
-            <div class="chip">
-              <span>3-Year Trend</span>
-              <strong id="trendLabel">-</strong>
+            <div class="chips">
+              <div class="chip">
+                <span>Current AQI (2025)</span>
+                <strong id="currentAqi">-</strong>
+              </div>
+              <div class="chip">
+                <span>Status</span>
+                <strong id="currentStatus">-</strong>
+              </div>
+              <div class="chip">
+                <span>3-Year Trend</span>
+                <strong id="trendLabel">-</strong>
+              </div>
             </div>
           </div>
 
-          <section class="info-block">
+          <section class="info-block info-block--wide">
             <div class="info-block__head">
               <div>
                 <p class="eyebrow">History</p>
@@ -167,7 +189,7 @@
             <div id="trendChart" class="trend-chart"></div>
           </section>
 
-          <section class="info-block">
+          <section class="info-block info-block--wide">
             <div class="info-block__head">
               <div>
                 <p class="eyebrow">Current Year Shift</p>
@@ -178,7 +200,7 @@
             <div id="monthlyShiftChart" class="monthly-graph" aria-label="Month wise AQI shift graph"></div>
           </section>
 
-          <section class="info-block">
+          <section class="info-block info-block--wide">
             <div class="info-block__head">
               <div>
                 <p class="eyebrow">Prediction</p>
@@ -189,7 +211,7 @@
             <div id="forecastChart" class="forecast-chart"></div>
           </section>
 
-          <section class="info-block">
+          <section class="info-block info-block--wide">
             <div class="info-block__head">
               <div>
                 <p class="eyebrow">Pollutants</p>
@@ -208,7 +230,7 @@
             </table>
           </section>
 
-          <section class="info-block">
+          <section class="info-block info-block--wide">
             <div class="info-block__head">
               <div>
                 <p class="eyebrow">Action Plan</p>
